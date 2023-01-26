@@ -1,0 +1,9 @@
+/Users/gz-d/IdeaProjects/cloud-fota/fota-web/src/main/java/com/upuphone/cloudplatform/fota/controller/FotaAppController.java
+/Users/gz-d/IdeaProjects/cloud-fota/fota-web/src/main/java/com/upuphone/cloudplatform/fota/interceptor/PermissionInterceptor.java
+/Users/gz-d/IdeaProjects/cloud-fota/fota-web/src/main/java/com/upuphone/cloudplatform/fota/controller/FotaManagementController.java
+/Users/gz-d/IdeaProjects/cloud-fota/fota-web/src/main/java/com/upuphone/cloudplatform/fota/controller/VersionManagementController.java
+/Users/gz-d/IdeaProjects/cloud-fota/fota-web/src/main/java/com/upuphone/cloudplatform/fota/config/MVCConfig.java
+/Users/gz-d/IdeaProjects/cloud-fota/fota-web/src/main/java/com/upuphone/cloudplatform/fota/FotaApplication.java
+/Users/gz-d/IdeaProjects/cloud-fota/fota-web/src/main/java/com/upuphone/cloudplatform/fota/controller/FormalReleaseController.java
+/Users/gz-d/IdeaProjects/cloud-fota/fota-web/src/main/java/com/upuphone/cloudplatform/fota/controller/TestReleaseController.java
+/Users/gz-d/IdeaProjects/cloud-fota/fota-web/src/main/java/com/upuphone/cloudplatform/fota/controller/SecurityController.java

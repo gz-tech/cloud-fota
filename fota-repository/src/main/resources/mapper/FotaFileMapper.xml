@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.upuphone.cloudplatform.fota.mapper.FotaFileMapper">
+    <resultMap id="BaseResultMap" type="com.upuphone.cloudplatform.fota.entity.FilePO">
+        <result column="versionId" property="versionId" />
+        <result column="fromVersionId" property="fromVersionId" />
+        <result column="uploadTime" property="uploadTime" />
+        <result column="name" property="name" />
+        <result column="fileId" property="fileId" />
+        <result column="type" property="type" />
+        <result column="status" property="status" />
+        <result column="size" property="size" />
+        <result column="ak" property="ak" />
+        <result column="sk" property="sk" />
+        <result column="endPoint" property="endPoint" />
+        <result column="bucketName" property="bucketName" />
+        <result column="objectName" property="objectName" />
+    </resultMap>
+
+    <select id="selectFilesByVersionIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT
+            f.version_id as versionId,
+            f.from_version_id as fromVersionId,
+            f.create_time as uploadTime,
+            f.name as `name`,
+            f.file_id as fileId,
+            f.type as `type`,
+            f.size as `size`,
+            f.status as status,
+            f.ak as ak,
+            f.sk as sk,
+            f.md5 as md5,
+            f.endPoint as endPoint,
+            f.bucket_name as bucketName,
+            f.object_name as objectName
+        FROM fota_file as f
+        WHERE
+        <if test="versions != null and versions.size>0">
+            f.version_id in
+            <foreach collection = "versions" item="id" separator=","  open="("  close=")">
+                #{id, jdbcType = VARCHAR}
+            </foreach>
+        </if>
+        <if test="versions!=null and versions.size==0">
+            1=0
+        </if>
+    </select>
+
+    <update id="updateFilesByFileIds" >
+        UPDATE fota_file
+        SET status = #{status, jdbcType = VARCHAR}
+        WHERE
+        file_id in
+        <foreach item="item" index="index" collection="fileIds" open="(" separator="," close=")">
+            #{item, jdbcType = VARCHAR}
+        </foreach>
+    </update>
+
+    <update id="updateFileStatusByVersionId" >
+        UPDATE fota_file
+        SET status = #{status, jdbcType = VARCHAR}
+        WHERE
+        version_id in
+        <foreach item="item" index="index" collection="versionId" open="(" separator="," close=")">
+            #{item, jdbcType = VARCHAR}
+        </foreach>
+    </update>
+
+    <insert id="addFile" parameterType="com.upuphone.cloudplatform.fota.entity.FilePO">
+        INSERT INTO fota_file
+        (file_id, version_id, from_version_id, `name`, endpoint, bucket_name, object_name,
+        `size`, md5, ak, sk, `type`,storage_provider, create_time, create_by, status)
+        VALUES
+        (#{fileId, jdbcType=VARCHAR},#{versionId, jdbcType=VARCHAR}, #{fromVersionId, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR},
+        #{endPoint, jdbcType=VARCHAR}, #{bucketName, jdbcType=VARCHAR},
+        #{objectName, jdbcType=VARCHAR}, #{size, jdbcType=BIGINT}, #{md5, jdbcType=VARCHAR},
+        #{ak, jdbcType=VARCHAR}, #{sk, jdbcType=VARCHAR}, #{type, jdbcType=VARCHAR}, #{storageProvider, jdbcType=VARCHAR},
+        #{createTime, jdbcType=TIMESTAMP},#{createBy, jdbcType=VARCHAR}, #{status, jdbcType=VARCHAR})
+    </insert>
+
+
+    <update id="setPassed" parameterType="java.lang.String">
+        UPDATE  fota_file
+        SET
+        status = #{status, jdbcType = VARCHAR}
+        WHERE version_id = #{versionId, jdbcType = VARCHAR}
+    </update>
+
+    <select id="selectFilesToPublic" resultType="com.upuphone.cloudplatform.fota.entity.FilePO">
+        SELECT
+               f.version_id AS versionId,
+               f.bucket_name AS bucketName,
+               f.object_name AS objectName
+        FROM fota_file f
+        LEFT JOIN version_release v ON f.version_id = v.version_id
+        WHERE
+        v.type = 'FORMAL'
+        AND v.status = 'FORMAL_TO_RELEASE'
+        AND TIMESTAMPDIFF(SECOND, v.release_time, current_time) > 0
+    </select>
+</mapper>

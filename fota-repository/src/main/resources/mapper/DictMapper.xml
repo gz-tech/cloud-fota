@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.upuphone.cloudplatform.fota.mapper.DictMapper">
+    <select id="selectDictByFlnm" parameterType="java.lang.String" resultType="com.upuphone.cloudplatform.fota.entity.DictEntity">
+        SELECT
+        d.code AS code,
+        d.text AS text
+        FROM fota_dict d
+        LEFT JOIN fota_dict_fl f
+        ON d.flnm = f.code
+        WHERE f.code = #{flnm, jdbcType = VARCHAR}
+    </select>
+</mapper>

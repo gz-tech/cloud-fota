@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="9.2">
+<file name="/Users/gz-d/IdeaProjects/cloud-fota/fota-service/src/main/java/com/upuphone/cloudplatform/fota/util/AESUtils.java">
+<error line="60" severity="error" message="当前行匹配非法表达式： &apos;System\.out\.println&apos;。" source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpCheck"/>
+<error line="61" severity="error" message="当前行匹配非法表达式： &apos;System\.out\.println&apos;。" source="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpCheck"/>
+</file>
+<file name="/Users/gz-d/IdeaProjects/cloud-fota/fota-service/src/main/java/com/upuphone/cloudplatform/fota/service/impl/ReleaseServiceImpl.java">
+</file>
+</checkstyle>

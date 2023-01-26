@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.upuphone.cloudplatform.fota.mapper.FotaVersionMapper">
+
+
+    <select id="selectVersionById"  parameterType="java.lang.String" resultType="com.upuphone.cloudplatform.fota.entity.VersionPO">
+        SELECT
+        v.version_id AS versionId,
+        v.name AS name,
+        v.description AS description,
+        v.status AS status,
+        v.major AS major,
+        v.minor AS minor,
+        v.build AS build,
+        v.patch AS patch
+        FROM fota_version v
+        WHERE version_id = #{versionId, jdbcType = VARCHAR}
+    </select>
+
+
+    <update id="updateVersion" parameterType="com.upuphone.cloudplatform.fota.entity.VersionPO">
+        UPDATE fota_version
+        <set>
+            <if test="name != null and name != ''">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null and name != ''">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null and status !='' ">
+                status = #{status,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where version_id = #{versionId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="releaseVersion">
+        UPDATE fota_version
+        SET
+        status = 'IN_RELEASE'
+    </update>
+
+
+    <resultMap id="versionListMap" type="com.upuphone.cloudplatform.fota.entity.VersionInfoListPO" >
+        <result property="versionId" column="versionId" />
+        <result property="uploadTime" column="uploadTime" />
+        <result property="versionStatus" column="versionStatus" />
+        <collection property="files" ofType="com.upuphone.cloudplatform.fota.entity.FileListPO"
+                    select="selectFilesFromVersion" column="versionId" javaType="java.util.List">
+            <result column="fileId" property="fileId" />
+            <result column="fileName" property="name" />
+            <result column="fileStatus" property="status" />
+        </collection>
+    </resultMap>
+
+    <select id="selectFilesFromVersion" resultType="com.upuphone.cloudplatform.fota.entity.FileListPO">
+        SELECT f.file_id as fileId,
+               f.name AS name,
+               f.status AS status
+        FROM fota_file f
+        WHERE f.version_id = #{versionId, jdbcType = VARCHAR}
+    </select>
+
+    <select id="versionListByPage" parameterType="com.upuphone.cloudplatform.fota.entity.VersionPO" resultMap="versionListMap">
+        SELECT v.version_id as versionId,
+               v.create_time as uploadTime,
+               v.status as versionStatus
+        FROM fota_version v
+       <where>
+           <if test="version.startTime != null">
+               AND v.create_time &gt;= #{version.startTime, jdbcType = TIMESTAMP}
+           </if>
+           <if test="version.endTime != null">
+               AND v.create_time &lt;= #{version.endTime, jdbcType = TIMESTAMP}
+           </if>
+           <if test="version.versionId != null and version.versionId != ''">
+               AND v.version_id LIKE concat('%',#{version.versionId, jdbcType = VARCHAR}, '%')
+           </if>
+           <if test="version.status != null and version.status != ''">
+               AND v.status = #{version.status, jdbcType = VARCHAR}
+           </if>
+       </where>
+        ORDER BY v.create_time DESC
+    </select>
+
+    <resultMap id="versionWithFileMap" type="com.upuphone.cloudplatform.fota.entity.VersionWithFilePO" >
+        <result property="versionId" column="versionId" />
+        <collection property="files" ofType="java.lang.String" javaType="java.util.List">
+            <result column="fileName"  />
+        </collection>
+    </resultMap>
+
+    <select id="selectVersionWithFile" parameterType="com.upuphone.cloudplatform.fota.entity.VersionPO" resultMap="versionWithFileMap">
+        SELECT v.version_id as versionId,
+               f.name as fileName
+        FROM fota_version v
+        LEFT JOIN fota_file f
+        ON v.version_id = f.version_id
+        <where>
+            <if test="version.status != null and version.status != ''">
+                AND v.status = #{version.status, jdbcType = VARCHAR}
+            </if>
+        </where>
+        ORDER BY v.create_time DESC
+    </select>
+
+    <update id="updateVersionStatusByVersionId" >
+        UPDATE fota_version
+        SET status = #{status, jdbcType = VARCHAR}
+        WHERE
+        version_id in
+        <foreach item="item" index="index" collection="versionId" open="(" separator="," close=")">
+            #{item, jdbcType = VARCHAR}
+        </foreach>
+    </update>
+
+    <select id="testReleaseVersion" resultType="com.upuphone.cloudplatform.fota.entity.TestReleaseVersionPO">
+        select f.version_id as versionId,
+               r.`status` as testReleaseStatus
+        from fota_version f
+        left join version_release r on f.version_id = r.version_id and r.type = 'TEST'
+        where f.status = 'VERSION_TO_TEST'
+    </select>
+
+</mapper>

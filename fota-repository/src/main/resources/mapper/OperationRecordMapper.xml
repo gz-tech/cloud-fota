@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.upuphone.cloudplatform.fota.mapper.OperationRecordMapper">
+
+
+    <select id="listOperationByVersionId" parameterType="com.upuphone.cloudplatform.fota.entity.OperationRecord" resultType="com.upuphone.cloudplatform.fota.entity.OperationRecord">
+        SELECT
+        o.time AS `time`,
+        o.user_name AS userName,
+        o.user_id AS userId,
+        o.content AS content
+        FROM fota_operation_record o
+        WHERE
+        o.relation_id = #{relationId, jdbcType = VARCHAR}
+        AND o.module = #{module, jdbcType = VARCHAR}
+        ORDER BY o.time DESC
+    </select>
+
+
+    <select id="selectOperation" resultType="com.upuphone.cloudplatform.fota.entity.OperationPO">
+        select
+        r.relation_id as relationId,
+        max(r.time) as operationTime,
+        r.user_id as operator
+        from fota_operation_record r
+        where
+        <if test="relationIds != null and relationIds.size>0">
+            r.relation_id in
+            <foreach collection = "relationIds" item="id" separator=","  open="("  close=")">
+                #{id, jdbcType = VARCHAR}
+            </foreach>
+        </if>
+        <if test="relationIds!=null and relationIds.size==0">
+            1=0
+        </if>
+        <if test="module!=null and module!=''">
+            and r.module = #{module, jdbcType = VARCHAR}
+        </if>
+        group by r.relation_id
+    </select>
+</mapper>

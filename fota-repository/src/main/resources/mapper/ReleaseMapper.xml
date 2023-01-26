@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.upuphone.cloudplatform.fota.mapper.ReleaseMapper">
+    <resultMap id="formalReleaseListMap" type="com.upuphone.cloudplatform.fota.entity.FormalReleaseListPO" >
+        <result property="versionId" column="versionId" />
+        <result property="description" column="description" />
+        <result property="operator" column="operator" />
+        <result property="major" column="major" />
+        <result property="minor" column="minor" />
+        <result property="build" column="build" />
+        <result property="patch" column="patch" />
+        <result property="operator" column="operator" />
+        <collection property="releases" ofType="com.upuphone.cloudplatform.fota.entity.ReleasePO"
+                    select="selectReleaseFromVersion" column="versionId" javaType="java.util.List">
+            <result column="releaseId" property="releaseId" />
+            <result column="releaseName" property="releaseName" />
+            <result column="status" property="status" />
+            <result column="releaseTime" property="releaseTime" />
+        </collection>
+    </resultMap>
+    
+    <select id="selectReleaseFromVersion" resultType="com.upuphone.cloudplatform.fota.entity.ReleasePO">
+        select r.release_id as releaseId,
+               r.release_name as releaseName,
+               r.status as status,
+               r.release_time as releaseTime
+        from version_release r
+        where version_id = #{versionId, jdbcType = VARCHAR}
+        and r.type = 'FORMAL'
+    </select>
+
+    <select id="releaseListByPage" parameterType="com.upuphone.cloudplatform.fota.entity.ReleasePO" resultMap="formalReleaseListMap">
+        SELECT v.version_id AS versionId,
+               v.description AS description,
+               v.major AS major,
+               v.minor AS minor,
+               v.build AS build,
+               v.patch AS patch,
+               max(r.time) AS operationTime,
+               r.user_id AS operator
+        FROM fota_version v
+        LEFT JOIN fota_operation_record r ON r.relation_id = v.version_id
+        WHERE v.status = 'VERSION_RELEASED'
+        <if test="versions != null and versions.size>0">
+            AND v.version_id IN
+            <foreach item="item" index="index" collection="versions" open="(" separator="," close=")">
+                #{item, jdbcType = VARCHAR}
+            </foreach>
+            GROUP BY r.relation_id
+            ORDER BY v.major DESC, v.minor DESC , v.build DESC,v.patch DESC
+        </if>
+        <if test="versions!=null and versions.size==0">
+            AND 1=0
+        </if>
+    </select>
+
+    <select id="selectReleaseList" parameterType="com.upuphone.cloudplatform.fota.entity.ReleasePO" resultType="com.upuphone.cloudplatform.fota.entity.ReleasePO">
+        SELECT
+                r.version_id as versionId,
+                r.release_id as releaseId
+        FROM    version_release r
+        <where>
+            <if test="release.startTime != null">
+                AND r.release_time &gt;= #{release.startTime, jdbcType = TIMESTAMP}
+            </if>
+            <if test="release.endTime != null">
+                AND r.release_time &lt;= #{release.endTime, jdbcType = TIMESTAMP}
+            </if>
+            <if test="release.versionId != null and release.versionId != ''">
+                AND r.version_id = #{release.versionId, jdbcType = VARCHAR}
+            </if>
+            <if test="release.status != null and release.status != ''">
+                AND r.status = #{release.status, jdbcType = VARCHAR}
+            </if>
+            <if test="release.type != null and release.type != ''">
+                AND r.type = #{release.type, jdbcType = VARCHAR}
+            </if>
+            <if test="release.releaseName != null and release.releaseName != ''">
+                AND r.release_name like concat('%', #{release.releaseName, jdbcType = VARCHAR}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="testReleaseListByPage" parameterType="com.upuphone.cloudplatform.fota.entity.ReleasePO" resultType="com.upuphone.cloudplatform.fota.entity.ReleasePO">
+
+        SELECT
+        r.version_id as versionId,
+        r.release_id as releaseId,
+        r.release_name as releaseName,
+        r.release_time as releaseTime,
+        r.status as status,
+        v.major as major,
+        v.minor as minor,
+        v.build as build,
+        v.patch as patch
+        FROM version_release r
+        LEFT JOIN fota_version v ON v.version_id = r.version_id
+        WHERE
+        r.type = "TEST"
+        <if test="release.startTime != null">
+            AND r.release_time &gt;= #{release.startTime, jdbcType = TIMESTAMP}
+        </if>
+        <if test="release.endTime != null">
+            AND r.release_time &lt;= #{release.endTime, jdbcType = TIMESTAMP}
+        </if>
+        <if test="release.releaseName != null and release.releaseName != ''">
+            AND r.release_name LIKE concat('%',#{release.releaseName, jdbcType = VARCHAR}, '%')
+        </if>
+        <if test="release.status != null and release.status != ''">
+            AND r.status = #{release.status, jdbcType = VARCHAR}
+        </if>
+        ORDER BY v.major DESC, v.minor DESC , v.build DESC,v.patch DESC, r.release_time DESC
+    </select>
+
+    <update id="release">
+        UPDATE version_release
+        SET
+        status = #{toStatus, jdbcType = VARCHAR}
+        WHERE
+        status = #{fromStatus, jdbcType = VARCHAR}
+        AND TIMESTAMPDIFF(SECOND, release_time, current_time) > 0
+    </update>
+
+    <update id="formalVersionRelease">
+        UPDATE version_release
+        SET
+            status = #{toStatus, jdbcType = VARCHAR}
+        WHERE
+            status = #{fromStatus, jdbcType = VARCHAR}
+        AND TIMESTAMPDIFF(SECOND, release_time, current_time) > 0
+        AND version_id = #{versionId, jdbcType = VARCHAR}
+    </update>
+
+    <select id="selectVersionToRelease" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT version_id FROM version_release
+        WHERE status = #{status, jdbcType = VARCHAR}
+        AND TIMESTAMPDIFF(SECOND, release_time, current_time) > 0
+    </select>
+
+    <select id = "selectRelease" resultType="com.upuphone.cloudplatform.fota.entity.ReleasePO">
+        SELECT
+                r.release_name as releaseName,
+                r.release_time as releaseTime,
+                r.version_id   as versionId,
+                r.imei         as imei,
+                r.type         as type,
+                r.status       as status,
+                v.name         as versionName,
+                v.major        as major,
+                v.minor        as minor,
+                v.build        as build,
+                v.patch        as patch,
+                v.description  as description
+        FROM version_release r
+        LEFT JOIN fota_version v
+        ON r.version_id = v.version_id
+        WHERE r.status = 'FORMAL_IN_RELEASE' OR r.status = 'TEST_IN_RELEASE'
+    </select>
+
+    <update id="updateByVersionId" parameterType="com.upuphone.cloudplatform.fota.entity.ReleasePO">
+        UPDATE version_release
+        SET
+            status = #{status, jdbcType = VARCHAR}
+        WHERE
+            type = #{type, jdbcType = VARCHAR}
+        and version_id = #{versionId, jdbcType = VARCHAR}
+    </update>
+
+    <select id="selectExistNameRelease" parameterType="com.upuphone.cloudplatform.fota.entity.ReleasePO"
+            resultType="com.upuphone.cloudplatform.fota.entity.ReleasePO">
+        SELECT release_id
+        FROM version_release
+        WHERE release_id != #{releaseId, jdbcType = VARCHAR}
+            AND release_name = #{releaseName, jdbcType = VARCHAR}
+            AND `type` = #{type, jdbcType = VARCHAR}
+    </select>
+
+    <select id="selectExistTestRelease" parameterType="java.lang.String"
+            resultType="com.upuphone.cloudplatform.fota.entity.ReleasePO">
+        select release_id as releaseId from version_release
+        where version_id = #{versionId, jdbcType = VARCHAR}
+        and (status = 'TEST_TO_RELEASE' or status = 'TEST_IN_RELEASE')
+    </select>
+</mapper>

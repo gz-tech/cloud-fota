@@ -1,0 +1,26 @@
+
+# Nacos帮助文档: https://nacos.io/zh-cn/docs/concepts.html
+# Nacos认证信息
+spring:
+  application:
+    name: cloud-fota
+
+
+
+
+#下面这些内容是为了让MyBatis映射
+#指定Mybatis的Mapper文件
+mybatis-plus:
+  mapper-locations: classpath:mapper/**/*.xml
+  #指定Mybatis的实体目录
+  type-aliases-package: com.upuphone.cloudplatform.core.mybatis.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+server:
+  port: 8080
+
+
+logging:
+  level:
+    com.upuphone.cloudplatform.core.mybatis.mapper: debug
+

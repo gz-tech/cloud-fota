@@ -1,0 +1,25 @@
+#Sat May 07 15:17:21 CST 2022
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/mapper/FotaVersionMapper.java=1650789871908
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/VersionPO.java=1647226603903
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/Country.java=1642584707552
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/mapper/ReleaseMapper.java=1650943378808
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/UpgradeRange.java=1642586189963
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/VersionInfoListPO.java=1647226603903
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/mapper/OperationRecordMapper.java=1647226603904
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/City.java=1642584707524
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/State.java=1642584707493
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/OperationRecord.java=1647226603902
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/mapper/DictMapper.java=1642585769328
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/FilePO.java=1650789871906
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/FormalReleaseListPO.java=1647226603901
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/Region.java=1642584707504
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/CommonEntity.java=1647226603901
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/ReleasePO.java=1647226603902
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/OperationPO.java=1647226603902
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/mapper/FotaFileMapper.java=1647226603904
+configuration*?=A76499C51CD305DEDA9E959BB23185F3E98B603A
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/mapper/FotaUpdateRangeMapper.java=1642585769316
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/VersionWithFilePO.java=1647226603903
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/TestReleaseVersionPO.java=1647226603902
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/FileListPO.java=1647226603901
+/Users/gz-d/IdeaProjects/cloud-fota/fota-repository/src/main/java/com/upuphone/cloudplatform/fota/entity/DictEntity.java=1647857157487

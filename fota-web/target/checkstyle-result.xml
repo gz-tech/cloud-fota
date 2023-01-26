@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="9.2">
+<file name="/Users/gz-d/IdeaProjects/cloud-fota/fota-web/src/main/java/com/upuphone/cloudplatform/fota/config/MVCConfig.java">
+</file>
+<file name="/Users/gz-d/IdeaProjects/cloud-fota/fota-web/src/main/java/com/upuphone/cloudplatform/fota/interceptor/PermissionInterceptor.java">
+</file>
+</checkstyle>

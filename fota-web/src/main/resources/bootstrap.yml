@@ -1,0 +1,6 @@
+app:
+  id: cloud-fota
+apollo:
+  bootstrap:
+    enabled: true
+    namespaces: application, CloudPlatform.fota_datasource, CloudPlatform.dict, CloudPlatform.global_nacos, CloudPlatform.test-imei, CloudPlatform.global_redis
